@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.ServiceModel;
 using System.Linq;
+using System.ServiceModel.Description;
 
 namespace WcfPeer
 {
@@ -19,6 +20,11 @@ namespace WcfPeer
 
 		public virtual void Add<T>(){
 			var host = new ServiceHost(typeof(T));
+			host.Description.Behaviors.Add(new ServiceThrottlingBehavior () {
+				MaxConcurrentCalls=int.MaxValue, 
+				MaxConcurrentInstances=int.MaxValue,
+				MaxConcurrentSessions = int.MaxValue
+			});
 			var interfaceType = typeof(T).GetInterfaces().First();
 			var ep = host.AddServiceEndpoint(interfaceType, binding.New(), address.Server<T>()); 
 			foreach(var behavior in behaviors.Behaviors)

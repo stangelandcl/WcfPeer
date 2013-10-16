@@ -9,6 +9,9 @@ namespace WcfPeer
 		public virtual Binding New(){
 			var b = new NetTcpBinding();
 			b.MaxConnections = 256;
+			b.ListenBacklog = 256;
+			//b.MaxBufferSize = 
+			//b.MaxBufferPoolSize =
 			b.MaxReceivedMessageSize = int.MaxValue;
 			b.ReaderQuotas.MaxBytesPerRead = int.MaxValue;
 			b.ReaderQuotas.MaxDepth = int.MaxValue;
