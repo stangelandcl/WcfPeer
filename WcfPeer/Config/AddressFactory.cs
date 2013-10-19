@@ -12,17 +12,23 @@ namespace WcfPeer
 		int port;
 
 		public virtual string Server<T>(){
-			return Client<T>(Dns.GetHostName());
+			return Client<T>("localhost");//Dns.GetHostName());
 		}
 
 		public virtual string Client<T>(string host){
-			return string.Format("net.tcp://{0}:{1}/{2}",
+			var name = typeof(T).Name;
+			if(typeof(T).IsInterface)
+				name = name.Substring(1);
+			var addr = string.Format("net.tcp://{0}:{1}/{2}",
 			                     host,
 			                     port,
-			                     typeof(T).Name);
+			                     name);
+			Console.WriteLine("Address " + addr);
+			return addr;
 		}
 
-		public static AddressFactory Default = new AddressFactory(new Random().Next() % 64000 + 1024);
+		public static AddressFactory Default = 
+			new AddressFactory(new Random(1).Next() % 64000 + 1024);
 	}
 }
 

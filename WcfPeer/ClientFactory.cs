@@ -5,30 +5,22 @@ namespace WcfPeer
 {
 	public class ClientFactory
 	{
-		public ClientFactory (BindingFactory binding, AddressFactory address, BehaviorFactory behaviors)
+		public ClientFactory (ConnectionFactory f)
 		{
-			this.address = address;
-			this.binding = binding;
-			this.behaviors = behaviors;
+			this.connection = f;
 		}
-
-		BindingFactory binding;
-		AddressFactory address;
-		BehaviorFactory behaviors;
+		protected ConnectionFactory connection;
 
 		public virtual T New<T>(string host){
-			var ep = new EndpointAddress(address.Client<T>(host));
-			var channel = new ChannelFactory<T>(binding.New(),ep);
-			foreach(var behavior in behaviors.Behaviors)
+			var ep = new EndpointAddress(connection.AddressFactory.Client<T>(host));
+			var channel = new ChannelFactory<T>(connection.BindingFactory.New(),ep);
+			foreach(var behavior in connection.BehaviorFactory.Behaviors)
 				channel.Endpoint.Behaviors.Add(behavior);
 			channel.Open();
 			return channel.CreateChannel();
 		}
 
-		public static ClientFactory Default = new ClientFactory(
-			BindingFactory.Default,
-			AddressFactory.Default,
-			BehaviorFactory.Default);
+		public static ClientFactory Default = new ClientFactory(ConnectionFactory.Default);
 	}
 }
 

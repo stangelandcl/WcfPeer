@@ -6,17 +6,21 @@ namespace WcfPeer
 {
 	public class BindingFactory
 	{
-		public virtual Binding New(){
+		public virtual Binding New(double timeoutSeconds = 30){
 			var b = new NetTcpBinding();
 			b.MaxConnections = 256;
 			b.ListenBacklog = 256;
+			b.SendTimeout = TimeSpan.FromSeconds(timeoutSeconds);
+			b.ReceiveTimeout = TimeSpan.FromSeconds(timeoutSeconds);
 			//b.MaxBufferSize = 
 			//b.MaxBufferPoolSize =
 			b.MaxReceivedMessageSize = int.MaxValue;
-			b.ReaderQuotas.MaxBytesPerRead = int.MaxValue;
-			b.ReaderQuotas.MaxDepth = int.MaxValue;
-			b.ReaderQuotas.MaxStringContentLength = int.MaxValue;
-			b.ReaderQuotas.MaxArrayLength = int.MaxValue;
+			if(b.ReaderQuotas != null){
+				b.ReaderQuotas.MaxBytesPerRead = int.MaxValue;
+				b.ReaderQuotas.MaxDepth = int.MaxValue;
+				b.ReaderQuotas.MaxStringContentLength = int.MaxValue;
+				b.ReaderQuotas.MaxArrayLength = int.MaxValue;
+			}
 			return b;
 		}
 

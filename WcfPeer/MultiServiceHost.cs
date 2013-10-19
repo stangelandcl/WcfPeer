@@ -9,13 +9,9 @@ namespace WcfPeer
 	public class MultiServiceHost
 	{
 		List<ServiceHost> services = new List<ServiceHost>();
-		BindingFactory binding;
-		AddressFactory address;
-		BehaviorFactory behaviors;
-		public MultiServiceHost(BindingFactory binding, AddressFactory address, BehaviorFactory behaviors){
-			this.binding = binding;
-			this.address = address;
-			this.behaviors = behaviors;
+		ConnectionFactory connection;
+		public MultiServiceHost(ConnectionFactory f){
+			this.connection = f;
 		}
 
 		public virtual void Add<T>(){
@@ -26,8 +22,8 @@ namespace WcfPeer
 				MaxConcurrentSessions = int.MaxValue
 			});
 			var interfaceType = typeof(T).GetInterfaces().First();
-			var ep = host.AddServiceEndpoint(interfaceType, binding.New(), address.Server<T>()); 
-			foreach(var behavior in behaviors.Behaviors)
+			var ep = host.AddServiceEndpoint(interfaceType, connection.BindingFactory.New(), connection.AddressFactory.Server<T>()); 
+			foreach(var behavior in connection.BehaviorFactory.Behaviors)
 				ep.Behaviors.Add(behavior);
 			services.Add(host);
 		}
@@ -42,10 +38,7 @@ namespace WcfPeer
 				host.Close();
 		}
 
-		public static MultiServiceHost Default = new MultiServiceHost(
-			BindingFactory.Default,
-			AddressFactory.Default,
-			BehaviorFactory.Default);
+		public static MultiServiceHost Default = new MultiServiceHost(ConnectionFactory.Default);			
 	}
 }
 

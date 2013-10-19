@@ -42,9 +42,14 @@
     <Compile Include="Config\AddressFactory.cs" />
     <Compile Include="Config\BehaviorFactory.cs" />
     <Compile Include="Config\BindingFactory.cs" />
+    <Compile Include="Config\ConnectionFactory.cs" />
+    <Compile Include="DuplexClientFactory.cs" />
+    <Compile Include="Services\Ping.cs" />
+    <Compile Include="Config\OperationInvoker.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <Folder Include="Config\" />
+    <Folder Include="Services\" />
   </ItemGroup>
 </Project>
